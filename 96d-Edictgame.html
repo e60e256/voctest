@@ -1,0 +1,1099 @@
+<style>
+    .quizScreen {
+        background-color: rgb(220, 220, 69);
+    }
+
+    #inTitle {
+        display: block;
+    }
+
+    #inGame {
+        display: none;
+    }
+
+    #inResult {
+        display: none;
+    }
+
+    .bSC {
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .buttonStart2 {
+        font-size: 50px;
+        padding: 20px 50px;
+        text-align: center;
+        border: 10px solid black;
+        background-color: blueviolet;
+    }
+
+    #buttonStart:hover {
+        background-color: rgb(188, 97,255);
+    }
+
+
+
+
+    #qpas {
+        font-size: large;
+    }
+
+    
+
+    #qword {
+        font-size: large;
+    }
+    .qbox {
+         display: flex;
+         flex-direction: row;
+         flex-wrap: wrap;
+         height: 200px;
+         justify-content: center;
+    }
+    
+    .qitem {
+        border: 5px solid black;
+        padding: 20px;
+        margin: 20px;
+        width: 30%;
+        text-align: center;
+        opacity: 0.8
+    }
+
+    .qitem:hover {
+        opacity: 1
+    }
+
+    .item0 {
+        background-color: aqua;
+    }
+
+    .item1 {
+        background-color: aquamarine;
+    }
+    .item2 {
+        background-color: pink;
+    }
+    .item3 {
+        background-color: darkcyan;
+    }
+    .item4 {
+        background-color: yellowgreen;
+    }
+    .item5 {
+        background-color: lightblue;
+    }
+    
+    th, td {
+        border: 2px solid black
+    }
+</style>
+
+<html>
+<body class = "quizScreen">
+
+<div id = "inTitle">
+    <h1 style = "text-align:center"><b>Edictgame</b></h1>
+    <h2 style = "text-align:center">Rules: Select the correct meaning of the word in Japanese!!</h3>
+        <br>
+        <br>
+    <div class = "bSC">
+    <div id = "buttonStart" class = "buttonStart2">Start</div>
+    </div>
+</div>
+
+<div id = "inGame">
+<div>
+    <div id = "qpas">Select the correct meaning of this word in Japanese:     <span id = "qword"></span>
+    <div id = "remT">Remaining time: </div>
+    <div id = "stats">Marks: </div>
+</div> 
+</div>
+
+    <div id = "fc" class = "qbox">
+        
+    </div>
+</div>
+
+<div id = "inResult">
+<h1 style = "text-align:center">Results</h1>
+<h2 id = "result" style = "text-align:center"></h2>
+<div id = "resultTable"></div>
+<div class = "bSC">
+    <div id = "buttonRestart" class = "buttonStart2">Restart</div>
+    <div id = "buttonTitle" class = "buttonStart2">Title</div>
+</div>
+</div>
+
+</body>
+</html>
+<script>
+
+// Dictionary
+let dict = [];
+dict[20] = {
+    
+"single out": "（候補者から）～を選抜する",
+"all in all": "概して（by and large, on the whole)",
+"runners-up": "次点、2位の人",
+"misbehavior": "素行不良",
+"delinquent": "非行少年の、過失を犯した",
+"shed": "～を流す、～を垂らす",
+"have a go": "～を試みる",
+"go on with": "～を続ける",
+"go on X": "Xが起こる, Xを続ける",
+"vindicate": "～の無実を証明する、～の汚名をすすぐ",
+"write-up": "論評、好意的な記事",
+"have the edge over": "～よりも優勢である",
+"versatile": "多目的な ( = multipurpose)、融通の利く、万能な ( = universal)",
+}
+
+dict[21] = {
+    "fulsome": "不快なほど胡麻をすってくる",
+    "suave": "物柔らかな、丁寧な",
+    "courtesy": "礼儀正しさ",
+    "gracious": "優雅な",
+    "sophisticated": "洗練された",
+    "ingratiate": "意識的によくふるまっているように見える、～に取り入る",
+    "jaded": "多すぎて飽きる、うんざりした、飽き飽きした",
+    "surfeit": "過剰",
+    "shabby": "意地悪で価値のない下劣な / 卑しい / 侘しい",
+    "despicable": "卑劣な",
+    "extravagantly": "贅沢に",
+    "profusion": "豊富にあること、（過度の）乱費、贅沢",
+"lavish": "豪華な、豊富な、有り余る",
+"generous": "気前のよい、惜しみない",
+"groom": "～を調整する、手入れする",
+"nepotism": "縁故主義",
+"favoritism": "えこひいき、偏愛",
+"propensity": "性癖、傾向",
+"disposition": "（人の）気質、傾向 / 配置",
+"forethought": "先見の明",
+"connotation": "含蓄、暗示",
+"tacit": "暗黙の",
+"squander": "浪費する",
+"carnivorous": "肉食動物",
+"fissiped": "陸生肉食動物",
+"musteline": "イタチ科",
+"wolverine": "グズリ",
+"badger": "アナグマ",
+"shaggy-coated": "髪の毛に使用される",
+"judicious": "賢明な、思慮分別のある",
+"compliment": "誉め言葉、お世辞",
+"complement": "補完、～を補う",
+
+"ornithological": "鳥類の",
+"underpin": "～を下支えする",
+"hectic": "非常に忙しい",
+"camaraderie": "友情、仲間意識",
+"get hooked on": "～に夢中になる",
+"get the hang of it": "コツをつかむ",
+"turnover": "売上金",
+"get a buzz from": "～によってほろ酔い気分になる",
+"pass on": "～を伝える",
+"scruffy": "みすぼらしい、だらしがない ( = untidy)",
+"untidy": "だらしない、不精な ( = scruffy)",
+"flatmate": "同居人",
+"bust up": "（物を）壊す、～を粉々にする（話）",
+"roomy": "（部屋が）広い",
+"cramped": "狭苦しい、窮屈な",
+"cramp": "けいれん、生理痛",
+"how cut off I felt": "どれほど孤独に感じたか",
+"prospect": "見込み、予想 ( = perspective)",
+"perspective": "見通し ( = prospect)",
+"prospective": "予想される、期待される、見込みのある",
+"down the line": "完全に / 将来",
+"one another": "互いに ( = each other)"
+}
+
+dict[22] = {
+    "ration": "～を制限する",
+    "take center stage": "主役になる",
+    "excruciate": "～をさいなむ、～を苦しめる",
+    "a body of～": "大勢の",
+    "undertaking": "事業 ( = enterprise, business)",
+    "hands-on": "実際に操作できる、体験型の、実践型の",
+    "crisscross": "あぐらをかいてすわる",
+    "miniature": "ミニチュアの、小型の",
+    "make it to the next century": "次世代に残すことに成功する",
+    "make it into the charts": "チャートに載るに至る",
+    "in captivity": "檻の中で",
+    "at large": "逃走中の、全体として",
+    "grain": "穀粒",
+    "granule": "顆粒",
+    "umbrella organization": "母体企業、統率団体",
+    
+    "harbour": "（悪い考えなど）を心に抱く、～を匿う",
+    "take on": "～を引き受ける",
+    "laid back": "くつろいだ、リラックスした",
+    "come in for criticism": "非難を浴びる",
+    
+    "go through": "～を通り抜ける、～を経験する",
+
+    "like-minded":"同じ考えを持った",
+    "glean from": "～から情報を収集する",
+    "get on with": "～と折り合う",
+    "get on with life": "（嫌なことがあっても）くじけずに生きていく",
+    "get along with": "～とうまくやっていく",
+    "see eye to eye with": "～と同意見だ",
+    "easel": "画架",
+    "brushwork": "筆致、画風",
+    "scrupulously": "彫刻を作るように、丁寧に、きちんと",
+
+    "rap one's knuckles": "～を叱る",
+    "get on top of one another": "互いに積み重なる",
+    "get on top of ~": "～を鎮圧する、～を乗り越える",
+    "set X on -ing": "Xに～しようと思わせる",
+    "go off with": "～と駆け落ちする、～を持ち逃げする",
+    "hassle": "面倒",
+    "accountancy": "会計、経理",
+    "eulogy": "（死者への）追悼、賛辞",
+    "dilate": "～を拡張する",
+    "deputy": "代理人、副～",
+    "regiment": "連隊（軍用語）",
+    "parable": "たとえ話、寓話、比喩",
+    "conscript": "（人を）徴兵する",
+    "ambush": "待ち伏せ、伏兵",
+    "bush": "茂み",
+    "sergeant": "軍曹",
+    "be couched in terms of": "～という観点で言い表される",
+    "couch": "（～の言い方で）言い表す"
+    
+
+}
+
+dict[23] = {
+"soap opera": "ソープオペラ",
+"in the train of life": "～のあとに続いて、～の結果として",
+"belie": "偽って示す、（～が）間違っていることを示す、（～と）矛盾する",
+"fall over": "倒れる",
+"with a thud" : "ドタンと",
+"shoelace": "くつひも",
+"trip up": "～を倒す、～を失敗させる",
+"draw up": "（文書を）を作成する",
+"glamour": "魅力、美貌",
+"go with": "～とともに行く",
+"agent": "代理店、工作員",
+"resumes": "要約",
+"shortlist": "短いリスト",
+"stagehand": "舞台係",
+"in the making of the film": "映画を作る中で",
+"tempted": "誘惑される",
+
+"financial stringency": "家計の厳しさ",
+"rudiment": "基本、基礎、初歩（ = fundamentals, basics)",
+"it's more about getting the maximum": "",
+"squashed like a sardine in a tram": "満員電車に揺られる",
+"invigorate": "～に活力を与える、～を鼓舞する",
+"set up for": "～ぶる",
+"set X up with": "Xを～に紹介する",
+"do my bit": "本分を尽くす、自分の役割を果たす",
+"get into it": "それに入り込む",
+"get about": "動き回る、出歩く",
+"go in for": "～を追求する",
+"homegeneity": "同質性",
+"take X for Y": "X を Y と勘違いする",
+"mail room": "郵便室"
+}
+
+dict[24] = {
+    "verge on": "～に近づく、～に接近する",
+    "noir": "ノアール、黒～",
+    "sultry": "蒸し暑い, 暑苦しい",
+    "in broad daylight": "昼時に, 昼時分に",
+    "take back": "～を元に戻す、～をひっこめる,撤回する",
+    "pound your credit card": "クレジットカードを叩く",
+    "up to speed": "最新の状態に",
+    "trestle": "うま、架台",
+    "kneehole desk": "引き出し付きの机",
+    "ergonomics": "人間工学",
+    "strike": "～を襲う",
+    "weekend city break": "週末に都市部に旅行すること",
+    "proximity": "近さ",
+    "petty crime": "つまらない犯罪",
+    "obligatory": "義務的な",
+    "be not much of a ": "たいした～ではない",
+    "fondue": "フォンデュ",
+    "clutch": "～をしっかりと握る、～をひったくる",
+    "airline": "航空路線, （潜水時の）空気管",
+    "culinary": "台所の、料理の",
+    "traipse": "あてもなく散歩する",
+    "ramble": "ぶらつく、散歩する",
+    "keep yourself going to sightseeing": "頑張って観光する",
+    "traverse": "（山を）横切る、（配列を）走査する",
+    "glacier": "氷河",
+    "politicize": "政治の的にする",
+    "rivalry": "競争、争い",
+    "blot": "しみ( = mackle)",
+    "mackle": "しみ ( = blot)",
+    "pristine": "手つかずの、無傷の(intact)",
+    "pristine": "手つかずの、無傷の(intact)",
+    "inducement": "誘発、誘惑、勧誘",
+    "defiant": "反抗的な、挑戦的な",
+    "airstrip": "仮説滑空路",
+    "glorify": "～の栄光をたたえる、～を賛美する",
+    "foot the bill": "勘定を支払う、（他人の行為の）責任を取る"
+    
+}
+
+dict[101] = {
+    
+"nauseated": "吐きそうに感じている",
+"expressionless": "無表情の",
+"pensive": "愁いに沈んだ、物思いにふけった",
+"persevere": "辛抱している、耐え忍んでいる",
+"hushed": "静まり返った",
+"anguished": "苦悩に満ちた、苦渋の",
+"confounded": "面食らう、困惑した、狼狽した、恐れ入った",
+"blush": "赤面する",
+"flushed": "紅潮した、（酒などで）上気して、興奮して",
+"grin": "歯を見せて笑う、満面の笑み",
+"smirk": "どや顔をして笑う、にやりと笑う",
+"dizzy": "めまいがする、くるめく",
+"triumphant": "勝ち誇った",
+"shush": "しーっ",
+"zany": "おどけた、滑稽な",
+"woozy": "ふらふらしている、混乱した",
+"drooling": "つばを垂らした",
+"grimacing": "しかめっ面",
+"spiral eyes": "ぐるぐる巻きの目",
+"potable": "飲用できる",
+"urn": "骨壺",
+"headstone": "墓",
+"satellite orbital": "軌道衛星",
+"waxing": "拡大している",
+"crescent moon": "三日月",
+"waning": "終わりに近づいている",
+"gibbous moon": "3/4位出ている月",
+"meridians": "子午線",
+"latitude": "経度",
+"longitude": "緯度",
+"flying saucer": "空飛ぶ円盤",
+"raised eyebrow": "吊り上がった眉毛",
+"lantern": "ランタン",
+
+
+
+}
+
+dict[102] = {
+"insinuate": "（不快なことを）ほのめかす、あてこする",
+"herd": "群れ、（生き物）を集める",
+"braid": "あみげ",
+"braided": "組み製の、編んだ",
+"reticular": "網様、網状の",
+"chatty": "おしゃべりな",
+"wrangle": "騒々しく喧嘩する、口論する",
+"jetsam": "がらくた、投げ荷 ( = flotsam)",
+"jetson": "NVIDIAのマイコン",
+"flotsam": "がらくた, 浮き荷, 漂流貨物 ( = jetsam)",
+"embiggen": "デカくする",
+"limpet": "カサガイ",
+"flutter": "はためく, ドキドキする",
+"seaworthy": "(船が)航海に適している, 耐航性のある",
+"nautical": "航海の、海自の",
+"coral reef": "サンゴ礁",
+"seaweed": "海藻、海藻",
+"boulder": "（丸い）大きな石（25.6cm以上の直径)",
+"treasure trove": "宝箱",
+"gold nugget": "金塊",
+
+}
+
+dict[103] = {
+    "jaywalking": "信号無視、赤信号を渡る",
+"culprit": "犯人、容疑者、被疑者",
+"plaintiff": "原告",
+"penal": "刑罰の、刑法の",
+"perpetrator": "犯人、加害者",
+"offender": "違反者",
+"convict": "（有罪宣告を受けた）罪人",
+"felon": "重罪人",
+"malefactor": "悪人",
+"wind up": "～を引き上げる、（ねじなどを）巻く",
+"screw thread": "ねじ",
+"drape": "（腕などを）だらんともたれさせる",
+"uphill battle": "苦戦、厳しい戦い",
+"incubation": "抱卵、培養、保育",
+"honorfic": "敬語",
+"accountability": "説明責任",
+"holistic": "全体論的な、総体的な",
+"mope": "（人を）憂鬱にする、しょんぼりさせる",
+"moped": "原付自転車",
+"brief": "下着、ブリーフ",
+"paperback": "ペーパーバック、仮製本、並製本 ( = softback, softcover)",
+"unary": "単項の, 1変数の",
+"binary": "2進数の、2項の, 2要素からなる",
+"ternary": "3項の, 3要素からなる ( = trinary)",
+"quaternary": "4進数の, 4要素からなる",
+"quinary": "5進数の, 5要素からなる",
+"hype": "誇大広告",
+"caucasus": "コーカサスの、カフカースの",
+"seismic": "地震の",
+"tarragon": "タラゴン(ロシアや中央アジアに分布するハーブの一種）",
+"crook": "ドロボー, ～を盗る",
+"schizophrenia": "統合失調症、精神分裂",
+"bigotry": "頑固な偏見",
+"step forward": "前に進む",
+"ennui": "悩み、倦怠、当惑、退屈",
+"tedious": "退屈な",
+"torment": "拷問する、苛める、苦しめる ( = excruciate)",
+"totter": "よろめく、よちよち歩く",
+"toddler": "よちよち歩く人、幼児",
+"moron": "バカ",
+"discern": "認識する、識別する",
+"allot": "（物事を）を割り当てる、を分配する",
+"nerve-wracking": "神経にさわる、非常に疲れさせる",
+"mishap": "（ちょっとした）事故、災難",
+"scholastic": "学校の、学校ぶった、堅苦しい",
+"chant": "詠唱, （魔法などを）詠唱する、繰り返し歌う",
+"get a hold of": "～を支配する",
+"place a high level of significance": "相当重視している",
+}
+
+dict[515] = {
+
+"resuscitate": "～を蘇生させる",
+"track one down": "～を見つけ出す",
+"abduct": "～を誘拐する ( = kidnap)",
+"uplifting": "高揚させる、気分を高めるような",
+"ethereal": "エーテルの、非常に神秘的な",
+"containment": "封じ込め、格納",
+"box office": "チケット売り場",
+"skeletal": "骨格の、骸骨のような、やせ衰えた",
+"cardiac arrest": "心停止",
+"heist": "強盗 / ～を強奪する",
+"recommission": "再任命",
+"astute": "（感覚が）鋭い、俊敏な ( = acute)",
+"pallet": "（狭くて固い）わら布団、荷物を載せる荷役台",
+"in custody": "拘留されて",
+"at large": "逃亡して",
+"detain": "～を拘留する",
+"inbound": "入ってくる、帰航の、到着する ( ←→ outbound)",
+"con": "（人を）だます",
+"spokesperson": "広報担当者",
+"guise": "(偽りの)見せかけ, 装い",
+"plead": "～を弁論する",
+"plead with A for B": "AにBを嘆願する",
+"extradite": "（逃亡犯を）引き渡す、強制送還する",
+"immersive theater": "体験型演劇シアター、イマーシブシアター",
+"parole": "仮出所、仮釈放（期間）",
+"misdemeanor": "軽罪、軽犯罪 / 不品行",
+"felony": "重罪、重犯罪（強盗、誘拐、強姦、殺人、クーデターなど）",
+"comedown": "落ちぶれ、（地位、名誉などの）失墜（略式）",
+"downfall": "（地位などの）没落、零落",
+
+"cautionary": "訓戒の",
+"excerption": "抜粋、抜き書き",
+"intersperse": "～を散在させる、～をちりばめる",
+"podium": "演壇、指揮台、表彰台",
+"coerce": "～に強いる、強制する",
+"have the audacity to do": "ずうずうしくも～する",
+"marshy": "湿地の、じめじめした、ぬかるんだ",
+"lame": "死に体",
+"hoopla": "おおさわぎ、騒動",
+"entice": "～を惹きつける、～を魅了する ( ≒ attract)",
+"subsidy": "補助金",
+
+
+"garrison": "守備隊、駐屯部隊",
+"able-bodied": "身体的に健全な、壮健な",
+"capitulation": "（条件付き）降伏、服従、陥落 ( = fall)",
+"cardiovascular": "心臓血管の",
+"lease": "借地契約、賃貸借契約、リース",
+"dispenser": "自動販売機 ( = vending machine)、分配者",
+"perceptive": "知覚的な、明敏な",
+"remedial": "学びなおしの、補修的なの",
+"remedial education": "治癒的な教育、リメディアル教育",
+"exasperate": "～を激怒させる、～を憤激させる",
+"canting": "レストラン（中国語） / 傾き、傾斜",
+"cede": "～を（戦争に負けて）割譲する",
+"commission": "（権限などの）委任、委託、委託書 / （委任された）職務、職権",
+"commissioner": "(官庁などの任命する)委員、理事、(官庁の)長官、弁務官",
+"cabin": "木造小屋、キャビン、（客船の）客室",
+"veto" : "「私は禁じる！」、（議案など）を拒否する、（行為）を差し止める",
+"on that score": "その点に関して、その理由で",
+"entrenched": "（考え方が）凝り固まった、染みついた、固定された、確立した、根付いた",
+"faction": "（政党内の）党派、派閥、一派 / 党内の争い、派閥争い",
+"clique": "（排他的で少人数な）徒党、派閥",
+
+
+
+"gore": "流血, 殺人事件、暴力",
+"bulimia": "食べ過ぎ、過食症、食欲亢進",
+"anorexia": "食欲不振、拒食症",
+"nonconsensual": "非合意の、無理強いの",
+"vigilante": "自警団",
+"vigilante behavior": "非公権力が自らの法に則って他者を罰する行為",
+"groom": "身繕い、毛繕い",
+"child grooming": "子供に取り入ること",
+"fraudulent": "詐欺行為の",
+"glorify": "～を賛美する、～を美化する",
+"perpetrate": "(悪事を)行う、しでかす",
+"extremism": "過激主義、過激な思想、極端論",
+"radical fundamentalism": "過激な原理主義",
+"cub": "幼獣、子、新米 / 未熟な",
+
+
+"circumspect": "慎重な、用心深い",
+"emaciated": "やせ衰えた、やつれた、衰弱した",
+"emancipate": "（奴隷など）を解放する、～を自由にする",
+"emanate from": "（光などが）～から発出する、（考えなどが）（人）から出る",
+"maxim": "格言、公理",
+"wreak": "（罰などを）加える、与える / （怒りを）浴びせる (+ on)",
+"wreak vengeance": "恨みを晴らす",
+"hindsight": "あと知恵",
+"whereupon": "そうすると、するとすぐに",
+"yore": "昔、往時",
+"archaeology": "考古学",
+"pinnacle": "小尖塔",
+"splice": "(配列の要素などを)より継ぎする、継ぎ合わせる",
+"placate": "（人の怒りを）なだめる、慰める (= placate)",
+"appease": "～をなだめる、～をなだめて満足させる ( = placate)",
+"dynamo": "ダイナモ、発電機",
+"devious": "曲がりくねった / 率直でない、よこしまな",
+"deviant": "蒸気を逸した、逸脱した / 異常性格者",
+"ail": "（病気が人を）苦しめる",
+"ailing": "患っている",
+"ailment": "（軽い、慢性の）病気、不快",
+"a fatal malady": "不治の病",
+"a social malady": "社会の病弊",
+"feces": "糞便、排泄物",
+"excavate": "～を掘る、～を発掘する",
+"taint": "腐敗、堕落 / 汚れた",
+"coordinate": "同等の、同格の、等位の  (with) / ～を整合する",
+"bleak": "(天候が)寒い、(生活などが)厳しい、(環境が)わびしい",
+"mar": "～を損なう、～を台無しにする",
+"trickle": "(液体が)したたる、ぽたぽた落ちる",
+"carve": "～を彫る、（肉など）を切る",
+"inscribe": "（文字を）（石板などに）彫る、刻む / （物事を心に)刻み込む (+ on, in) ( = engrave, carve)",
+"concierge": "(ホテルの）案内人、(マンションの)管理人",
+"super": "(アパートなどの)管理人、監督 ( = superintendent)",
+"exploit and gain": "功名と利益",
+"vibrant": "震えるような / ぞくぞくするような",
+"liberal": "気前の良い、豊富な、寛大な、自由主義的な",
+"deliberately": "わざと、じっくりと、慎重に",
+"remit (A) B": "（金銭)BをAに送る",
+"remission": "(借金などを）減免する、(努力、痛みなどを)緩める",
+"remit": "(問題、事件を)付託する / 移送する",
+"remittance": "送金、送金額",
+"hitch": "(環・かぎなど)をひっかける, ～をひっかけて引き寄せる、ヒッチハイク",
+"nomadic tribes": "遊牧民族",
+"plunge one's hands into one's pockets": "ポケットに手を突っ込む",
+"tuck": "（服などの）端を(～に）押し込む、",
+"daybreak": "夜明け",
+"windbreak": "防風林、暴風設備",
+"breakdown": "機能停止",
+"blueprint": "青写真、詳細な設計図、計画",
+"lofty": "（目的などが）高尚な、高遠な / (態度などが)高慢な",
+
+"be admitted to X": "～に入る、～へ入学を許される",
+"articulate": "はっきりと発音する、歯切れがよい、明瞭に表現する / (発音が)明瞭な、(論旨が)明確な、（言語が）分節的な",
+"sth come into existence": "～が成立する、～が生まれる",
+"elder covenant": "年長者の契約",
+"A is piled on X" : "Aが Xの上に積みあがっている",
+"patriarch": "家長、(正教会の)総主教",
+"matriarch": "女家長",
+"formidable": "手ごわい、恐るべき",
+"incur debts": "（行為の報いとして）借金を負う",
+"abstain from": "（飲酒、快楽など）を差し控える、慎む ( = refrain from) / ～を棄権する",
+"attrition": "人員の損耗、自然削減 / (攻撃、摩擦による)消耗、疲弊",
+"concussion": "脳震盪 / 激しい振動",
+"wrinkle": "しわ、小じわ",
+}
+
+dict[26] = {
+    
+"sack": "～を袋詰めにする、～をクビる",
+"in situ": "その場で、その位置において",
+"budget airline": "格安航空会社( = low-cost carrier)",
+"airstrip": "空港設備のない離着陸場",
+"in short bursts": "一気に",
+"improvise": "即興で作る",
+"choreography": "(ダンスなどの)振付",
+"prequel": "（物語などの）前編",
+"quirky": "(人や行動が)突飛な、予測できない、曲がりくねった",
+"light-hearted": "(人が)屈託のない、快活な、（物事が)愉快な",
+"vigilant": "油断がない、用心深い、慎重な",
+"down-to-earth": "（計画などの）足がしっかりと地に着いた、現実的な",
+"go-getter": "（仕事などをどしどしやる）やり手、敏腕な人",
+"stylistic": "文体の、（芸術の）スタイルの",
+"toss out": "～を投げ捨てる",
+"mutter": "（低い声で）つぶやく、不平を言う",
+"displace": "（人を）立ち退かせる、（普通の位置から）移す",
+"assert oneself": "自己の存在を押し通す",
+"atheist": "無神論者",
+"cathedral": "大聖堂",
+"religion train": "宗教の信者",
+"blown away": "射殺される、圧倒される、感動する",
+"mind-blowing": "衝撃的な",
+"unaffiliated": "(どの組織とも)無関係の",
+"believe in the man upstairs": "形而上の存在を信じる",
+"switcheroo": "バカどんでん返し",
+"phooey": "そんなばかな！ちぇっ！",
+"buddhist": "仏教徒",
+"baptism": "洗礼、イニシエーション",
+"Copenhagen": "コペンハーゲン",
+"Latvia": "ラトビア",
+"Belgium": "ベルギー",
+"Prague": "プラハ（チェコの首都)",
+"Quebeg": "ケベック",
+"Azerbaijan": "アゼルバイジャン",
+}
+
+dict[28] = {
+    "informative": "（本が）参考になる、勉強になる",
+"accessible": "アクセスしやすい、面会しやすい、行きやすい",
+"well-established": "（慣習などが）確立した、定着した / （名声などが）ゆるぎない",
+"foremost": "一番先の、何よりも、誰よりも",
+"transcend": "～を超越する",
+"vantage point": "有利な点",
+"rush in": "～に突入する、～にドッと押し寄せる、～へ急ぎ",
+"crested": "冠毛（とさか）のある",
+"scratched to piece": "こすって粉々になる",
+"70 millimeter film": "70mmフィルム（撮影用フィルム）",
+"packet": "パケット、送受信データの塊、小包",
+"channel": "（～をいい方向へ）導く、向かわせる",
+"set your work apart": "作品を目立たせる",
+"come in handy": "（もの、人が）役立つ、重宝する",
+
+"cupboard": "食器棚",
+"watercolor": "水彩画",
+}
+
+dict[29] = {
+"ploy": "謀略、策略",
+"dismissive": "否定的な、見下げるような",
+"nutcracker": "くるみ割り人形",
+"paycheck": "給与支払小切手",
+"high-profile": "目立った、人目を引くような、注目を浴びている",
+"and all that": "～など",
+"put someone on the spot": "～を質問で困らせる",
+
+"on board": "働いて、やる気になって",
+"outset": "最初、発端、手始め",
+"deal with ups and downs": "浮き沈みに対処する",
+"imagery": "イメージの",
+"anxiety control": "不安をコントロールする技術",
+"suitability": "適合性",
+"paramount": "最重要の、最優先の",
+"stale": "陳腐な、古臭い、腐りかけた",
+"patch": "あて布、ばんそうこう",
+"be taken aback": "驚く、あっけにとられる",
+"in some quarters": "人によっては、場所によっては",
+"get my head around": "～を理解する",
+"transferable": "譲渡可能な",
+"on the pitch": "サッカーの試合場で",
+"be on pitch": "音程があっている",
+"confidentiality": "機密性、守秘義務",
+"up to standard": "基準に達している",
+"publicize": "～を公表する、～を公にする",
+"force for good": "善を促進する力",
+
+"oligarch": "オリガルヒ、新興財閥",
+"decadent": "退廃的な",
+"crucify": "～を貼り付けにする、～を虐待する",
+"low-key": "控えめな",
+"crystalline": "結晶のような",
+"plot twist": "どんでん返し",
+"pedantic": "衒学的な、(形式、厳密さに)にこだわる",
+"get on": "～に乗る、(何とか)やっていく、捗る",
+"getting on for": "（時が）移る、（時、年齢が）～に近づく",
+"pull off": "～を引っ張る、～をやってのける",
+"come up": "上る、昇る、近づく、昇進する",
+"confection": "お菓子",
+"Antarctica": "南極大陸",
+"identification card": "身分証明カード",
+"cardboard": "段ボール、厚紙 / 名ばかりの、実のない",
+
+"creep in": "～に忍び込む",
+"hand down": "（後世に）伝える、（判決を）言い渡す",
+"state-of-the-art": "最先端の",
+"break up": "休憩する",
+
+
+"borderline aggressive": "境界性人格障害レベルの攻撃性",
+"one-up": "一枚上手な、一歩先んじる",
+"carry over": "キャリーオーバー、持ち越す",
+"boss around": "～を牛耳る、指揮する",
+"brazenly": "のこのこと、いけしゃあしゃあと、臆面もなく、厚かましく",
+"braze": "真鍮",
+"Brussel": "ブリュッセル（ベルギーの首都）",
+"tuition": "授業料、授業、教育",
+"Farsi": "ペルシア語、イラン語",
+
+}
+
+dict[66] = {
+"voiceover": "映画のナレーターの声",
+"cairn": "石塚",
+"Peruvian": "ペルーの",
+"Andes mountains": "アンデス山脈",
+"open-air": "戸外の、野外の",
+"on account of that": "それにより",
+"fierce": "激しい、凄まじい",
+"at times": "時には、たまに",
+"procession": "進行、行列",
+"fabulous": "すばらしい、ロマン的な",
+"sculpt": "～を彫刻する",
+"marvel": "驚くべきこと / 驚く、驚嘆する",
+"insurance": "保険",
+"cut back on": "～を削減する",
+"splash out": "～に金を派手に使う、大盤振る舞いをする",
+"lorry": "大型トラック、貨物自動車",
+"rationally": "合理的に",
+"twist": "(糸などを)よる、～をゆがめる、(意味を)曲解する",
+"sticky": "粘着性のある、粘つく、ねちねち",
+"on other occasions": "それ以外の場合に、あらためて",
+"sweep": "～を掃く、～を一掃する、（ハリケーンなどが）素早く通過する",
+"envisage": "～と予想する、予測する",
+"annihilate": "～を絶滅させる、～を全滅させる ( = decimate)",
+"agile": "機敏な、はしっこい (+in)",
+"gear toward": "～に合わせて調整する、～に適合させる",
+"tech-savvy": "現代テクノロジーに精通した",
+"hone": "砥石、～を砥石で研ぐ、～に磨きをかける",
+}
+// which wordsets will be asked
+let pattern = [[20, 21, 22, 23, 101], [24, 101, 102], [515], [20, 21, 22, 23, 24, 26, 28, 29, 66, 101, 102, 103, 515]];
+let dictArr;
+// all wordsets in pattern[PT] will be the question pool
+const PT = 3;
+
+let n;
+let indexFromDict = [0];
+
+
+let qword = document.getElementById("qword")
+let fc = document.getElementById("fc");
+let remT = document.getElementById("remT");
+let stats = document.getElementById("stats");
+let result = document.getElementById("result");
+let resultTable = document.getElementById("resultTable");
+
+// initialization
+const OptionNum = 9;
+const tRI = 100; //time reduction interval
+const timeLimit = 10 * 1000 // in ms
+let answ = 0;
+let marks = 0;
+let wrongs = 0;
+let newelem = [];
+let qArray = [];
+let remTime = timeLimit; // in ms
+let timepasses; //setInterval
+let qNo = 60; // Number of questions asked overall
+let answered = 0;
+let timeFinished = 0;
+
+// when clicking
+clifunc = function(i) {
+    if (i == answ) {
+        alert(`Yes, Option ${answ+1} is correct!!`);
+        marks++;
+    } else {
+        if (i == -1 ) {
+            alert(`Time's up. ${answ+1} was correct`);
+            wrongs++;
+        } else {
+        alert(`No, Option ${answ+1} was correct`);
+        wrongs++;
+        }
+    }
+    qArray[answered] = {
+        options: Object.create(Object.getPrototypeOf(indexFromDict), Object.getOwnPropertyDescriptors(indexFromDict)),
+        correctAns: answ,
+        yourAns: i
+    }
+    answered++;
+    if (answered >= qNo) {
+        finishGame();
+        return;
+    }
+    renderQuestion();
+}
+
+initLayout = function() {
+    dictArr = Object.entries(Object.assign(...pattern[PT].map(value => dict[value])));
+
+    for (i = 0; i < OptionNum; i++) {
+    // create a new option element
+    newelem[i] = document.createElement("div");
+    newelem[i].innerHTML = `${i+1}: Hello`;
+    newelem[i].className = `qitem item${i}`;
+    newelem[i].id = `qOption_${i}`;
+    newelem[i].addEventListener("click", clifunc.bind(null, i));
+    fc.appendChild(newelem[i]);
+    }
+}
+
+
+renderStats = function() {
+    
+    qword.innerText = dictArr[indexFromDict[answ]][0];
+    remT.innerHTML = `Remaining time: <b>${remTime/1000}</b>s`;
+    stats.innerHTML = `Marks: ${marks}, Wrongs: ${wrongs}, Accuracy: ${(marks/(marks+wrongs)*100).toFixed(2)}%`;
+    
+}
+
+renderQuestion = function() {
+
+    indexFromDict.length = n = dictArr.length;
+    // extend the array
+    indexFromDict.fill(1, 0, indexFromDict.length);
+
+    // orderly set the index (later arrangeing randomly)
+    indexFromDict = indexFromDict.map((item, index) => index);
+
+    // extract the question randomly (O(n)) (arrange the index array randomly)
+    // the first 6 elements will be used later
+    for (let i = n-1; i >= 0; i--) {
+    let j = Math.floor((Math.random() * (n - i) + i));
+    [indexFromDict[j], indexFromDict[i]] = [indexFromDict[i], indexFromDict[j]];
+    }
+    // truncate elements with big indexes
+    indexFromDict.length = OptionNum;
+
+    // decide on the answer
+    answ = Math.floor(Math.random() * OptionNum);
+    
+    // rendering stats and innerHTML of options
+    for (i = 0; i < OptionNum; i++) {
+        newelem[i].innerHTML = `${i+1}: ${dictArr[indexFromDict[i]][1]}`;
+    }
+    //set the answer
+
+    console.log(answ);
+    initTimer();
+}
+
+initTimer = function() {
+    remTime = timeLimit;
+
+}
+
+
+
+
+
+
+gameStart = function() {
+
+    timeFinished = 0;
+        
+    marks = 0;
+    wrongs = 0;
+    newelem = []
+    timepasses = 0;
+    answered = 0;
+    qArray = []; // saves the history of question asked
+    
+    document.getElementById("inTitle").style.display = "none";
+    document.getElementById("inGame").style.display = "block";
+    document.getElementById("inResult").style.display = "none";
+    // Generate the frames for options 
+    initLayout();
+
+    // Ask the 1st question
+    renderQuestion();
+    renderStats();
+
+    timepasses = setInterval(() => {
+        remTime -= tRI;
+        timeFinished += tRI;
+        renderStats();
+        if (remTime <= 0) {
+            clifunc(-1); // no mercy, no answer
+        }
+    }, tRI);
+
+}
+
+let deleteOptions = function() {
+    clearInterval(timepasses);
+    let tmp;
+    for (let j = 0; j < OptionNum; j++) {
+        tmp = document.getElementById(`qOption_${j}`)
+        if (tmp != null) tmp.remove();
+    }
+}
+
+let finishGame = function() {
+    deleteOptions();
+    document.getElementById("inTitle").style.display = "none";
+    document.getElementById("inGame").style.display = "none";
+    document.getElementById("inResult").style.display = "block";
+
+    result.innerHTML = `Marks: ${marks}/${marks+wrongs}<br>
+                        Accuracy: ${marks/(marks+wrongs)*100}%<br>
+                        Finishing time: ${timeFinished/1000}s (${(timeFinished/1000/qNo).toFixed(3)}s per word)<br>
+                        Rank: ${getCERF(marks+wrongs, marks, timeFinished)}<br>`;
+    let resIn = `
+    <table class = "table table-success table-striped table-bordered table-responsive">
+    <thead>
+        <tr>
+            <th scope = "col-md-2">No.</th>
+            <th scope = "col-md-2">COM</th>
+            <th scope = "col-md-2">Right Ans.(En)</th>
+            <th scope = "col-md-2">(Ja)</th>
+            <th scope = "col-md-2">You</th>
+            <th scope = "col-md-2">Your Ans.(En)</th>
+            <th scope = "col-md-2">Your Ans.(Ja)</th>
+        </tr>
+    </thead>
+    <tbody>
+    `
+    for (let j = 0; j < marks+wrongs;j++) {
+        
+        let opt = qArray[j].options;
+
+    if (qArray[j].yourAns == -1) {
+        resIn += `
+    <tr>
+      <th scope = "row">${qArray[j].correctAns==qArray[j].yourAns ? j+1 : `<span style = "color: red">${j+1}</span>`}</th>
+      <td><b>${qArray[j].correctAns + 1}</b></td>
+      <td>${dictArr[opt[qArray[j].correctAns]][0]}</td>
+      <td>${dictArr[opt[qArray[j].correctAns]][1]}</td>
+      <td><b>${qArray[j].yourAns + 1}</b></td>
+      <td>${"(Time's up)"}</td>
+      <td>${"(時間切れ)"}</td>
+    </tr>
+    `
+    } else {
+        resIn += `
+    <tr>
+      <th scope = "row">${qArray[j].correctAns==qArray[j].yourAns ? j+1 : `<span style = "color: red">${j+1}</span>`}</th>
+      <td><b>${qArray[j].correctAns + 1}</b></td>
+      <td>${dictArr[opt[qArray[j].correctAns]][0]}</td>
+      <td>${dictArr[opt[qArray[j].correctAns]][1]}</td>
+      <td><b>${qArray[j].yourAns + 1}</b></td>
+      <td>${dictArr[opt[qArray[j].yourAns]][0]}</td>
+      <td>${dictArr[opt[qArray[j].yourAns]][1]}</td>
+    </tr>
+    `
+    }
+
+
+    }
+    resIn += "</tbody></table>"
+    resultTable.innerHTML = resIn;
+    console.log(resIn);
+    alert("Game Ended");
+}
+
+let getCERF = function(q, marks, timeFinished) {
+    
+    let band = 80;
+    let result = "";
+    let accuracy = marks/q;
+    if (q < 60) {
+        band += (120 - (1/30)*(60 - q)**2) * (145/120) * (-1 * Math.acos(Math.sqrt(accuracy)) + Math.PI/2) / (Math.PI/2);
+    }
+    if (q >= 60) {
+        band += 145 * (-1 * Math.acos(Math.sqrt(accuracy)) + Math.PI/2) / (Math.PI/2);
+    }
+    band -=  Math.max(timeFinished / q / 1000, 2) * 10;
+    band = Math.floor(band)
+    if (band < 80) {
+        result = "Below A1";
+    } else if (band < 100) {
+        result = "Pre-A1";
+    } else if (band < 120) {
+        result = "A1";
+    } else if (band < 140) {
+        result = "A2";
+    } else if (band < 153) {
+        result = "B1";
+    } else if (band < 160) {
+        result = "B1+";
+    } else if (band < 173) {
+        result = "B2";
+    } else if (band < 180) {
+        result = "B2+";
+    } else if (band < 193) {
+        result = "C1";
+    } else if (band < 200) {
+        result = "C1+";
+    } else {
+        result = "C2";
+    }
+    result += `(${band})`
+    return result;
+}
+
+
+
+gotoTitle = function() {
+    deleteOptions();
+    document.getElementById("inTitle").style.display = "block";
+    document.getElementById("inGame").style.display = "none";
+    document.getElementById("inResult").style.display = "none";
+}
+
+
+let buttonStart = document.getElementById("buttonStart");
+buttonStart.addEventListener("click", gameStart);
+let buttonRestart = document.getElementById("buttonRestart");
+buttonRestart.addEventListener("click", gameStart);
+let buttonTitle = document.getElementById("buttonTitle");
+buttonTitle.addEventListener("click", gotoTitle);
+
+/*
+
+-- Edictgame 英単語簡易学習ゲーム --
+
+やること: splw313のようなクイズゲームをブラウザ上で動く形で作成する。
+使用言語: Javascript （クライアント側、バニラ）、CSS
+プレイ人数: 1人
+
+工程表
+
+Alpha Ver0.25
+Part 1/4-------------------------------
+1. 単語を大量に用意する(JSON形式で)
+2. 配列に全部格納する
+3. ランダムに呼び出す機能を作る。
+4. 一応のクイズ形式を作る
+
+Alpha Ver0.25
+Part 2/4-------------------------------
+1. 要素を1つ表示する。 -done
+2. 要素に飾りつけをする (style) -done
+3. 要素の配置を考える。 -done (flexbox is op)
+4. 要素がn個のときに適切な配置をできるようにする。 -done (flexbox is op)
+5. idをセットする。 -done
+6. ボタンをクリックしたときの動作を考える。（クリックすると、alert(id)が表示されるように）-done
+7. 時間要素を追加する。 (0になると、id = -1が自動選択) -done
+
+Beta Ver0.75
+Part 3/4--------------------------------
+8. Edictgameと融合させて、中身を日本語訳にする。 -done
+9. 問題文（英単語）、正解数を追加する。 -done
+10. レイアウトを再び考慮する。 -done
+11. 要素をhoverしたときにに要素が動くようにする。 -done
+
+RC Ver1.0
+Part 4/4--------------------------------
+12. ゲームスタート画面を作る。-done
+13. ゲームサイクルを作る。ゲーム終了画面と、もう一度の画面を作る。 -done
+14. 問題、選択肢、答えを保存する配列を作り、ゲーム終了時に表示するようにする。-done
+15. 正解数をlocalStorageに保存するようにし、ゲーム開始時に自動ロードするようにする。
+
+
+Part 4/4
+スタート画面を作る。ただし、スタートボタンはWeblioの語彙力診断っぽくする。
+"Press Here to Start"
+
+13. スタート画面 → 問題回答（中断は一旦不可にする）→ (20問とか40問とか解いたら)結果発表
+（ひとまず、回答数、正答数、回答率、ランクを表示する。）
+
+14. 回答画面にテーブル形式で配列を追加する。
+
+（15. ゲームスタート画面から「Achievements」を追加して
+過去の回答数、正答数、回答率などを見れるようにする。任意）
+
+
+*/
+
+</script>
